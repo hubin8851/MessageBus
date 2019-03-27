@@ -6,11 +6,12 @@
 #include <tuple>
 #include <type_traits>
 
-#include "Func_traits.h"
 #include "RedefAny.h"
+#include "Func_traits.hpp"
+#include "NonCopyable.hpp"
 
 //消息总线类
-class BaseMsg_bus
+class BaseMsg_bus: NonCopyable
 {
 
 private:
@@ -20,6 +21,12 @@ private:
 
 protected:
 public:
+	static BaseMsg_bus& GetInstance()
+	{
+		static BaseMsg_bus _res;
+		return _res;
+	}
+
 	//注册消息
 	template<typename F>
 	void Attach(F&& f, const std::string& strTopic = "")
@@ -39,6 +46,19 @@ public:
 		{
 			auto f = it->second.AnyCast < function_type >();
 			f();
+		}
+	}
+
+	template<typename R, typename... Args>
+	void SendMsg(Args&&... args, const std::string& strTopic = "")
+	{
+		using function_type = std::function<R(Args...)>;
+		std::string strMsgType = strTopic + typeid(function_type).name();
+		auto range = m_MsgMap.equal_range(strMsgType);
+		for (Iterater it = range.first; it != range.second; ++it)
+		{
+			auto f = it->second.AnyCast < function_type >();
+			f(std::forward<Args>(args)...);
 		}
 	}
 
@@ -63,3 +83,4 @@ private:
 	}
 
 };
+

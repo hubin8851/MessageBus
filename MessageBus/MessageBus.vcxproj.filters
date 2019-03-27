@@ -18,10 +18,31 @@
     <ClInclude Include="BaseMesBus.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Func_traits.h">
+    <ClInclude Include="RedefAny.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="RedefAny.h">
+    <ClInclude Include="Any.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MsgFactory_Bus.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Func_traits.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Type_name.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Caller.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="NonCopyable.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="E_C_M.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ModernMsg_Bus.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

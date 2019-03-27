@@ -1,18 +1,19 @@
 #pragma once
 #include <iostream>
+#include <type_traits>
 #include <functional>
 #include <tuple>
-//ÆÕÍ¨º¯Êı.
-//º¯ÊıÖ¸Õë.
+//æ™®é€šå‡½æ•°.
+//å‡½æ•°æŒ‡é’ˆ.
 //function/lambda.
-//³ÉÔ±º¯Êı.
-//º¯Êı¶ÔÏó.
+//æˆå‘˜å‡½æ•°.
+//å‡½æ•°å¯¹è±¡.
 
-//×ª»»Îªstd::functionºÍº¯ÊıÖ¸Õë. 
+//è½¬æ¢ä¸ºstd::functionå’Œå‡½æ•°æŒ‡é’ˆ. 
 template<typename T>
 struct function_traits;
 
-//ÆÕÍ¨º¯Êı.
+//æ™®é€šå‡½æ•°.
 template<typename Ret, typename... Args>
 struct function_traits<Ret(Args...)>
 {
@@ -30,23 +31,23 @@ public:
 		using type = typename std::tuple_element<I, std::tuple<Args...>>::type;
 	};
 
-	//ÏÈÒÆ³ıÒıÓÃ£¬ÔÙÒÆ³ı³£Á¿ÒÆ³ı¼Ä´æÆ÷ÓÅ»¯
+	//å…ˆç§»é™¤å¼•ç”¨ï¼Œå†ç§»é™¤å¸¸é‡ç§»é™¤å¯„å­˜å™¨ä¼˜åŒ–
 	typedef std::tuple<std::remove_cv_t<std::remove_reference_t<Args>>...> tuple_type;
 	typedef std::tuple<std::remove_const_t<std::remove_reference_t<Args>>...> bare_tuple_type;
 };
 
-//İÍÈ¡º¯ÊıÖ¸Õë£¬½«Æä·µ»ØÖµºÍÈë²ÎÌáÈ¡³öÀ´
+//èƒå–å‡½æ•°æŒ‡é’ˆï¼Œå°†å…¶è¿”å›å€¼å’Œå…¥å‚æå–å‡ºæ¥
 template<typename Ret, typename... Args>
 struct function_traits<Ret(*)(Args...)> : function_traits<Ret(Args...)> {};
 
-//ÌáÈ¡std::functionÀà
-//std::function£¬ÎÊÌâÀ´ÁË£¿¸úÉÏÃæµÄÓĞÊ²Ã´Çø±ğ£¿
+//æå–std::functionç±»
+//std::functionï¼Œé—®é¢˜æ¥äº†ï¼Ÿè·Ÿä¸Šé¢çš„æœ‰ä»€ä¹ˆåŒºåˆ«ï¼Ÿ
 template <typename Ret, typename... Args>
 struct function_traits<std::function<Ret(Args...)>> : function_traits<Ret(Args...)> {};
 
-//³ÉÔ±º¯Êı×ª»»Îªstd::function
-//³ÉÔ±º¯ÊıµÄµ÷ÓÃÒ»¶¨ÒªÓĞ¾ßÌå¶ÔÏó£¬³ı·Çº¯ÊıÊ±¾²Ì¬µÄ£¬ËùÒÔĞèÒªº¯ÊıÀàĞÍºÍ±»µ÷ÓÃ¶ÔÏó https://blog.csdn.net/gx864102252/article/details/82634211
-//½«constµÈÀàĞÍÀ©Õ¹µ½º¯ÊıÏŞ¶¨·ûÎ»ÖÃ
+//æˆå‘˜å‡½æ•°è½¬æ¢ä¸ºstd::function
+//æˆå‘˜å‡½æ•°çš„è°ƒç”¨ä¸€å®šè¦æœ‰å…·ä½“å¯¹è±¡ï¼Œé™¤éå‡½æ•°æ—¶é™æ€çš„ï¼Œæ‰€ä»¥éœ€è¦å‡½æ•°ç±»å‹å’Œè¢«è°ƒç”¨å¯¹è±¡ https://blog.csdn.net/gx864102252/article/details/82634211
+//å°†constç­‰ç±»å‹æ‰©å±•åˆ°å‡½æ•°é™å®šç¬¦ä½ç½®
 #define FUNCTION_TRAITS(...)\
 template <typename ReturnType, typename ClassType, typename... Args>\
 struct function_traits<ReturnType(ClassType::*)(Args...) __VA_ARGS__> : function_traits<ReturnType(Args...)>{};\
@@ -57,9 +58,12 @@ FUNCTION_TRAITS(volatile)
 FUNCTION_TRAITS(const volatile)
 
 
-//º¯Êı¶ÔÏó.Ä£°åÊµÏÖÊ±ĞèÒª¾ßÌå¶ÔÏóÀàĞÍ
-//template<typename Callable>
-//struct function_traits : function_traits<decltype(&Callable::operator())> { };
+//å‡½æ•°å¯¹è±¡.æ¨¡æ¿å®ç°æ—¶éœ€è¦å…·ä½“å¯¹è±¡ç±»å‹
+//decltype æ£€æŸ¥å®ä½“çš„å£°æ˜ç±»å‹æˆ–è¡¨è¾¾å¼çš„ç±»å‹åŠå€¼åˆ†ç±»ï¼Œè¿”å›ç›¸åº”ç±»å‹ã€‚ https://zh.cppreference.com/w/cpp/language/decltype
+//åµŒå¥—ä¾èµ–åå­—operator()ä¼šå¯¼è‡´è§£æå›°éš¾ https://blog.csdn.net/dick_china/article/details/4522253
+template<typename Callable >
+struct function_traits : function_traits<decltype(&Callable::operator())>{};
+
 
 template <typename Function>
 typename function_traits<Function>::stl_function_type to_function(const Function& lambda)
